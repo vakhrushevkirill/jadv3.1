@@ -2,18 +2,10 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         Box box = new Box();
         int tackt = 10;
+        int timeout = 1000;
         Thread threadJoke = new Thread(() -> {
-            for (int i = 0; i < tackt; i++) {
-                try {
-                    Thread.sleep(1500);
-                    if (box.isOpenBox()) {
-                        box.setOpenBox(false);
-                        box.statusBox();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
+            while (!box.endGame()){
+                box.closeOpenBox();
             }
 
         });
@@ -21,16 +13,13 @@ public class Main {
         Thread threadUser = new Thread(() -> {
             for (int i = 0; i < tackt; i++){
                 try {
-                    Thread.sleep(1000);
-                    if (!box.isOpenBox()) {
-                        box.setOpenBox(true);
-                        box.statusBox();
-                    }
+                    Thread.sleep(timeout);
+                    box.openOpenBox();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
             }
+            box.endGame(true);
         });
 
         threadUser.start();
